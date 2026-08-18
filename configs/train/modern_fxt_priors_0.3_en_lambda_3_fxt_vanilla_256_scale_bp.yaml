@@ -1,0 +1,82 @@
+en_te_text: &en_te_text
+   data: /path/to/data  # root dir holding <lang>/*.parquet plus validation/ and test/
+   cache_dir: /path/to/hf_cache  # HF datasets/transformers cache
+   language_to_script:
+      <en>: <en>
+      
+   streaming: True
+   load_from_disk: True #set this to true to load an already cached dataset
+   num_proc: 4
+   train_size:
+      en: 2050000
+ 
+   val_size:
+      en: 10000
+
+model: &model
+   dropout: 0.1
+   model_config: "[2, (16,), 4, 0]"
+   activation_function: gelu
+   shuffle: true
+   num_predictors: 1
+   seq_len: 4096
+   use_binomial: False
+   use_group_attn: False
+   attn_type:
+   s_lower_bound: 3
+   scale_bp: 10
+   lm_hidden_dim: 1024
+   lm_inter_dim: 4096 #lm_hidden_dim * 4
+   lm_rms_eps: 1e-6
+   lm_re_base: 100000
+   lm_max_position_embeddings: 4096
+   lm_n_heads: 8
+   lm_n_kv_heads: 8
+   lm_dropout: 0.1
+   lm_attn_scaling: 1.0
+   lm_tie_weights: False # Decide if you want to tie the LM Head weight to the token embedding weights
+
+
+boundaries: &boundaries
+   boundaries_type: 'gumbel'
+   fixed_sf: 5
+   spikes_left: 2
+   temp: 0.5
+   script_tokens: "<en>"
+   prior_list: "0.333"
+   prior_std: "0.023"
+
+eval: &eval
+   eval_interval: 5000
+   eval_batch_size: 32
+
+optim: &optim
+   optim: adam
+   scheduler: cosine
+   #lr: 0.00025
+   lr: 3e-4
+   clip: 0.25
+   weight_decay: 0
+   adam_b1: 0.9
+   adam_b2: 0.999
+   adam_eps: 1e-8
+
+train: &train
+   max_train_steps: 48500
+   batch_size: 32
+   seq_len: 4096
+   gradient_accumulation_steps: 4
+   num_warmup_steps: 2000
+   checkpointing_steps: "5000"
+   num_train_epochs: 1
+   report_to: "wandb" # trackio or wandb
+   log_dir: "./wandb_logs"
+
+default:
+   train:
+      <<: *en_te_text
+      <<: *model
+      <<: *boundaries
+      <<: *eval
+      <<: *optim
+      <<: *train

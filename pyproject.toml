@@ -1,0 +1,29 @@
+[project]
+name = "lca-multibyte"
+version = "0.1.0"
+description = "Dynamic Multi-Byte Prediction With Hierarchical Language Models (LCA-MBP)"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "accelerate==1.12.0",
+    "datasets==3.1.0",
+    "numpy",
+    "pandas",
+    "pyarrow==16.1.0",
+    "pyyaml",
+    "safetensors",
+    "tokenizers==0.22.1",
+    "torch",
+    "torchdata",
+    "tqdm==4.67.0",
+    "transformers==4.57.3",
+    # experiment tracking, selected with --report_to
+    "wandb",
+]
+
+[project.optional-dependencies]
+# alternative tracking backend: --report_to trackio
+trackio = ["trackio"]
+
+[tool.uv]
+package = false

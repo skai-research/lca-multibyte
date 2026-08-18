@@ -1,0 +1,38 @@
+en_te_text: &en_te_text
+  task_type: SFT
+  dataset_name: opus-100
+  source: es
+  target: en
+  joint_input: True
+  cache_dir: /path/to/hf_cache  # HF datasets/transformers cache
+
+model: &model
+  pretrained_path: 
+  model_type: routing
+
+optim: &optim
+  optim: adam
+  scheduler: cosine
+  clip: 1.0
+  weight_decay: 0
+  adam_b1: 0.9
+  adam_b2: 0.999
+  adam_eps: 1e-8
+  lr: 2e-4
+
+train: &train
+  seq_len: 4096
+  batch_size: 16
+  gradient_accumulation_steps: 4
+  warmup_ratio: 0.1
+  checkpointing_steps: "1000"
+  num_train_epochs: 4
+  max_train_steps:
+  freeze_pretrained: false
+
+default:
+  train:
+    <<: *en_te_text
+    <<: *model
+    <<: *optim
+    <<: *train

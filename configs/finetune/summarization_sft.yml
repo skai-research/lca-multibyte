@@ -1,0 +1,34 @@
+en_te_text: &en_te_text
+  task_type: SFT
+  joint_input: True
+  cache_dir: /path/to/hf_cache  # HF datasets/transformers cache
+
+model: &model
+  pretrained_path: 
+  model_type: routing
+
+optim: &optim
+  optim: adam
+  scheduler: cosine
+  clip: 1.0
+  weight_decay: 0
+  adam_b1: 0.9
+  adam_b2: 0.999
+  adam_eps: 1e-8
+  lr: 1e-4
+
+train: &train
+  seq_len: 4096
+  batch_size: 16
+  gradient_accumulation_steps: 2
+  warmup_ratio: 0.1
+  checkpointing_steps: "1000"
+  num_train_epochs: 2
+  max_train_steps:
+
+default:
+  train:
+    <<: *en_te_text
+    <<: *model
+    <<: *optim
+    <<: *train
